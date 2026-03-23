@@ -3,9 +3,16 @@ const multer = require("multer");
 const fs = require("fs");
 const xml2js = require("xml2js");
 const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
+
+app.use(
+  cors({
+    origin: "*",
+  }),
+);
 app.use(express.json());
 
 const testUrl = "https://interfacetst.genco.com:7004/reflashIB";
@@ -13,10 +20,15 @@ const url = "https://interface.genco.com:7004/reflashIB";
 
 app.post("/upload-xml", upload.single("file"), async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No File uploaded" });
+    }
+
     const xmldata = req.file.buffer.toString();
 
+    // turn xml into JSON format
     const parsed = await xml2js.parseStringPromise(xmldata);
-    const unit = parsed.RELASH.UNIT[0];
+    const unit = parsed.REFLASH.UNIT[0];
 
     const payload = {
       Reflash: {

@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { CloudUploadRounded } from "@mui/icons-material";
 import { uploadXML } from "../API/index.js";
+import "../App.css";
 
 export default function Upload() {
   const [upload, setUpload] = useState(null);
@@ -73,7 +74,6 @@ export default function Upload() {
       <h1 className="title">XML Upload</h1>
       <Box className="uploads">
         <p>Drag and drop to upload XML file or click upload button</p>
-      </Box>
       <Box
         className="file-upload"
         sx={{
@@ -122,6 +122,7 @@ export default function Upload() {
           "Submit"
         )}
       </Button>
+      </Box>
       <Snackbar
         open={snackbarOpen}
         onClose={handleCloseSnackbar}
