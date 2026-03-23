@@ -35,6 +35,27 @@ export default function Upload() {
     setSnackbarOpen(false);
   };
 
+  // drag and drop logic
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const file = e.dataTransfer.files[0];
+
+    if (!file) return;
+
+    setUpload(file);
+    console.log("file uploaded");
+    console.log(file);
+    showSnackbar("File uploaded");
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    console.log("Drag File");
+  };
+
+  // uploads file
   const handleFiles = (e) => {
     const file = e.target.files[0];
 
@@ -43,11 +64,12 @@ export default function Upload() {
     if (e.target.name === "upload-file") {
       setUpload(file);
       console.log("File uploaded");
-      console.log(upload);
+      console.log(file);
       showSnackbar("File uploaded");
     }
   };
 
+  // submits file to API
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,54 +96,56 @@ export default function Upload() {
       <h1 className="title">XML Upload</h1>
       <Box className="uploads">
         <p>Drag and drop to upload XML file or click upload button</p>
-      <Box
-        className="file-upload"
-        sx={{
-          border: "2px dashed #ccc",
-          borderRadius: 2,
-          padding: 4,
-          margin: 1,
-          textAlign: "center",
-          position: "relative",
-          "&:hover": {
-            borderColor: "#888",
-          },
-        }}
-      >
-        <Button
-          className="new"
-          component="label"
-          variant="contained"
-          startIcon={<CloudUploadRounded />}
+        <Box
+          className="file-upload"
+          onDrop={(e) => handleDrop(e)}
+          onDragOver={handleDragOver}
+          sx={{
+            border: "2px dashed #ccc",
+            borderRadius: 2,
+            padding: 4,
+            margin: 1,
+            textAlign: "center",
+            position: "relative",
+            "&:hover": {
+              borderColor: "#888",
+            },
+          }}
         >
-          Upload
-          <input
-            type="file"
-            name="upload-file"
-            hidden
-            onChange={handleFiles}
-            accept=".xml"
-          />
+          <Button
+            className="new"
+            component="label"
+            variant="contained"
+            startIcon={<CloudUploadRounded />}
+          >
+            Upload
+            <input
+              type="file"
+              name="upload-file"
+              hidden
+              onChange={handleFiles}
+              accept=".xml"
+            />
+          </Button>
+        </Box>
+        <Button
+          className="submit"
+          variant="contained"
+          onClick={handleSubmit}
+          disabled={loading}
+          sx={{
+            "&.Mui-disabled": {
+              backgroundColor: "#5e7889",
+              color: "white",
+            },
+          }}
+        >
+          {loading ? (
+            <CircularProgress size={24} sx={{ color: "white" }} />
+          ) : (
+            "Submit"
+          )}
         </Button>
-      </Box>
-      <Button
-        className="submit"
-        variant="contained"
-        onClick={handleSubmit}
-        disabled={loading}
-        sx={{
-          "&.Mui-disabled": {
-            backgroundColor: "#5e7889",
-            color: "white",
-          },
-        }}
-      >
-        {loading ? (
-          <CircularProgress size={24} sx={{ color: "white" }} />
-        ) : (
-          "Submit"
-        )}
-      </Button>
       </Box>
       <Snackbar
         open={snackbarOpen}
